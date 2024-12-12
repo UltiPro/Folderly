@@ -4,5 +4,7 @@ services:
     build: .
     ports:
       - "5000:5000"
+    environment:
+      - DISK_PATH=${DISK_PATH}
     volumes:
-      - ./folderly-data:/folderly-data
+      - .${DISK_PATH}:${DISK_PATH}
