@@ -14,4 +14,4 @@ class Hello(MethodView):
     @blp.arguments(HelloSchema)
     @blp.response(201)
     def post(self, helloSchema):
-        return f"Hello {helloSchema['name']}!"
+        return f"Hello {helloSchema["name"]}!"
