@@ -1,0 +1,8 @@
+login_regex = r"^(?=.*?[a-zA-Z\d])[a-zA-Z][a-zA-Z\d_-]{2,28}[a-zA-Z\d]$"
+login_regex_error = "Login must be between 4 and 30 characters long and must start with a letter and end with a letter or number. May contain a floor and a dash between the start and end."
+password_regex = r"^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[.~!@#$%^&*()+=[\]\\;:'\"/,\|{}<>?])[a-zA-Z0-9.~!@#$%^&*()+=[\]\\;:'\"/,\|{}<>?]{8,40}$"
+password_regex_desc = "Password must be between 8 and 40 characters long and contain at least one lowercase letter, one uppercase letter, one number and one special character."
+path_regex = r"^(/[^<>:\"|?*\n.]+)*(\/)?$"
+path_regex_error = "Invalid path."
+folder_regex = r"^[a-zA-Z0-9_-]+$"
+folder_regex_error = "Invalid folder name. Folder names can only contain letters, digits, dashes (-) and underscores (_)."
