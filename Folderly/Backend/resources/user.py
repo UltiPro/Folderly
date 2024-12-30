@@ -12,6 +12,7 @@ from passlib.hash import pbkdf2_sha256
 from orm import db
 from schemas import UserSchema
 from models.user import UserModel
+from models.folder import FolderModel
 from models.blocklist import BlocklistModel
 
 blp = Blueprint("user", __name__, description="User Endpoints")
@@ -28,6 +29,9 @@ class UserRegister(MethodView):
             email=user_data["email"], password=pbkdf2_sha256.hash(user_data["password"])
         )
         db.session.add(user)
+        db.session.commit()
+        user = UserModel.query.filter(UserModel.email == user_data["email"]).first()
+        user.folders.append(FolderModel(path=f"{user.id}"))
         db.session.commit()
         return {"message": "User created successfully."}, 201
 
@@ -69,16 +73,21 @@ class UserLogout(MethodView):
         return None, 204
 
 
-@blp.route("/user/<int:user_id>")
+@blp.route("/user")
 class User(MethodView):
     @jwt_required()
-    @blp.response(200, UserSchema)
-    def get(self, user_id):
-        return UserModel.query.get_or_404(user_id)
+    @blp.arguments(UserSchema)
+    @blp.response(204)
+    def put(self, user_data):
+        user = UserModel.query.get_or_404(get_jwt_identity())
+        user.email = user_data["email"]
+        user.password = pbkdf2_sha256.hash(user_data["password"])
+        db.session.commit()
+        return None, 204
 
     @jwt_required()
     @blp.response(204)
-    def delete(self, user_id):
-        db.session.delete(UserModel.query.get_or_404(user_id))
+    def delete(self):
+        db.session.delete(UserModel.query.get_or_404(get_jwt_identity()))
         db.session.commit()
         return None, 204
