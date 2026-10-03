@@ -1,0 +1,98 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+
+# Ignore virtual environments
+env/
+venv/
+venv_back/
+.venv/
+.virtualenv/
+
+# Ignore Python package and build metadata
+*.egg-info/
+*.egg
+*.whl
+*.manifest
+*.spec
+pip-wheel-metadata/
+site/
+
+# Ignore package management files (Pipenv, Poetry)
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Ignore development and IDE configuration files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Ignore logs, temporary and backup files
+*.log
+logs/
+*.out
+*.err
+*.pid
+*.tmp
+*.bak
+*.backup
+*.old
+*.orig
+*~
+*.~*
+*.swp
+
+# Ignore test-related files and coverage reports
+tests/
+*.test.py
+.coverage
+.coverage.*
+coverage/
+pytest_cache/
+.cache/
+
+# Ignore Docker and Compose configuration files
+docker-compose.override.yml
+docker-compose.local.yml
+Dockerfile.*
+.dockerignore~
+
+# Ignore build and distribution folders
+build/
+dist/
+*.o
+*.so
+
+# Ignore git-related files
+.git/
+.gitignore
+.gitattributes
+*.patch
+
+# Ignore environment variable files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env.*
+
+# Ignore SQLite databases
+*.db
+*.sqlite3
+*.sqlite3-journal
+instance/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore the local storage directories — uploaded files and the database —
+# which `COPY . .` would otherwise bake into the image.
+folderly-data/
+folderly-db/

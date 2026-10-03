@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DISK_PATH=${DISK_PATH}
+      - DB_DIR=${DB_DIR}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      # Gunicorn sizing. Defaults suit a small machine, raise on a bigger host.
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-2}
+      - GUNICORN_THREADS=${GUNICORN_THREADS:-4}
+      - GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}
+    volumes:
+      - .${DISK_PATH}:${DISK_PATH}
+      - .${DB_DIR}:${DB_DIR}
