@@ -53,7 +53,8 @@ tests/
 .coverage
 .coverage.*
 coverage/
-pytest_cache/
+.pytest_cache/
+.ruff_cache/
 .cache/
 
 # Ignore Docker and Compose configuration files

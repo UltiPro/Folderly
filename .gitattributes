@@ -1,0 +1,5 @@
+# Line endings for the files Linux executes or parses.
+*.yml           text eol=lf
+.dockerignore   text eol=lf
+.env.example    text eol=lf
+Dockerfile      text eol=lf

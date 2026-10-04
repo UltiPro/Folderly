@@ -1,0 +1,18 @@
+# Tooling config only. The app has no packaging metadata: it is run as a
+# container, not installed as a distribution.
+
+[tool.ruff]
+# The local DISK_PATH and DB_DIR: a user can upload a .py through the API,
+# and ruff would otherwise lint whatever lands there.
+exclude = ["folderly-data", "folderly-db"]
+
+[tool.ruff.lint]
+# Ruff's defaults plus bugbear.
+select = ["E4", "E7", "E9", "F", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The tests import app.py, orm.py and so on from the backend root, which is not
+# on sys.path by default when pytest collects from tests/.
+pythonpath = ["."]
+addopts = "-q"

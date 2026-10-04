@@ -1,0 +1,6 @@
+# Development and CI only, the image installs requirements.txt alone.
+-r requirements.txt
+
+pytest==8.4.2
+ruff==0.14.5
+requests==2.32.5

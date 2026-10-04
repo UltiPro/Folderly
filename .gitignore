@@ -38,6 +38,7 @@ instance/
 .coverage.*
 coverage/
 .pytest_cache/
+.ruff_cache/
 .cache/
 
 # IDE / editor configuration
