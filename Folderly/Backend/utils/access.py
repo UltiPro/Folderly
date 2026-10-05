@@ -22,7 +22,7 @@ def to_full_path(path, share=None):
     """Resolve a client path within its space to the internal full path.
 
     `share` must name a folder the caller owns or has been shared; anything
-    else — unknown token or not theirs — is the same 404, so probing tokens
+    else - unknown token or not theirs - is the same 404, so probing tokens
     reveals nothing. The path's segments cannot climb out of the space:
     `path_regex` forbids `.` and splitting on `/` leaves no separators.
     """
@@ -45,7 +45,7 @@ def forbid_space_root(path):
 
     For your own space that root is your account's home, and losing it breaks
     the account; for a shared space it is the folder the owner shared, which
-    only the owner may remove — from their own space, where it is not the root.
+    only the owner may remove - from their own space, where it is not the root.
     """
     if not relative_parts(path):
         abort(400, message="The root folder cannot be renamed or deleted.")
@@ -68,7 +68,7 @@ def new_share_token():
 # Access: who may do what where.
 #
 # The owner may do anything in their tree. Anyone else gets the role of the
-# share they reach the path through — and since shares are inherited downwards
+# share they reach the path through - and since shares are inherited downwards
 # and a folder can be shared more than once along one path (`/Photos` as read,
 # `/Photos/Vacation` as edit), the *best* role among all of them applies. A
 # share lower down can widen access, never narrow it.
@@ -108,7 +108,7 @@ def tracked_ancestors(full_path):
 
 
 def role_among(user_id, folders):
-    """The best role user_id holds across `folders` — "owner" if the tree is
+    """The best role user_id holds across `folders` - "owner" if the tree is
     theirs, else their strongest share role, else None."""
     if not folders:
         return None
@@ -172,7 +172,7 @@ def resolve_disk_path(disk_root, full_path):
 
 
 def existing_folder(full_path):
-    """The folder on disk, or 404 — also when full_path names a *file*.
+    """The folder on disk, or 404 - also when full_path names a *file*.
 
     Checked after the access check, never before, so that whether something
     exists is not revealed to someone who may not see it.
@@ -188,7 +188,7 @@ def refuse_file_in_the_way(path):
     one of the folders leading to it.
 
     Without this, `os.makedirs` either fails with an OSError the client sees as
-    a 500, or — for the path itself — reports success while the file stays.
+    a 500, or - for the path itself - reports success while the file stays.
     Only the nearest existing component matters: a file has no children, so
     everything above the first existing folder is a folder too. The message
     names just that component, never the internal path.

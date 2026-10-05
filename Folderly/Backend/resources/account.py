@@ -58,8 +58,8 @@ class User(MethodView):
     def put(self, user_data):
         """Change my email and password
 
-        `email` and `password` are the new values — both required, even when
-        only one of them changes — and `current_password` confirms it is you.
+        `email` and `password` are the new values - both required, even when
+        only one of them changes - and `current_password` confirms it is you.
         Logs out every session of the account, this one included: carry on
         with the new tokens in the response.
         """
@@ -98,7 +98,7 @@ class User(MethodView):
             )
             FolderModel.query.filter(FolderModel.owner_id == user_id).delete(synchronize_session=False)
         FolderShareModel.query.filter_by(user_id=user_id).delete(synchronize_session=False)
-        # The code stays spent — only the link to the deleted account goes.
+        # The code stays spent - only the link to the deleted account goes.
         ActivationCodeModel.query.filter_by(used_by_id=user_id).update(
             {"used_by_id": None}, synchronize_session=False
         )

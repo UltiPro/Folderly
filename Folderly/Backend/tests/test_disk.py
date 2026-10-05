@@ -67,7 +67,7 @@ def test_uploads_stop_at_the_limit(client, alice, capacity):
 
 
 def test_the_incoming_file_counts_as_already_written(client, alice, capacity):
-    capacity(total=1000, used=840)  # 84% — under the limit until this request lands
+    capacity(total=1000, used=840)  # 84% - under the limit until this request lands
     assert client.get("/disk", headers=alice.headers).get_json()["uploads_blocked"] is False
     assert upload(client, alice, content=b"x" * 200).status_code == 507
 

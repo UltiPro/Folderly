@@ -1,6 +1,6 @@
 """Gunicorn settings for the container (see the Dockerfile's CMD).
 
-Gunicorn's defaults — one synchronous worker, 30 s timeout — do not suit a file
+Gunicorn's defaults - one synchronous worker, 30 s timeout - do not suit a file
 server: one upload blocks every other request, and a slow one is cut off
 halfway. The numbers here are defaults rather than decisions: CI builds one
 image for every machine, so each of them is overridable through the
@@ -29,7 +29,7 @@ wsgi_app = "app:init()"
 # Threads rather than more processes: uploads and downloads spend their time
 # waiting on the network and the disk, and processes cost tens of MB of RAM
 # each. Concurrency is workers × threads; the defaults give 8 at once, which
-# suits a small single-board machine — raise them on a bigger host.
+# suits a small single-board machine - raise them on a bigger host.
 worker_class = "gthread"
 workers = _int_env("WEB_CONCURRENCY", 2)  # gunicorn's own name for this
 threads = _int_env("GUNICORN_THREADS", 4)

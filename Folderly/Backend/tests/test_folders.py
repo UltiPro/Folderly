@@ -39,7 +39,7 @@ def test_creating_the_same_folder_twice_is_not_an_error(client, alice):
 def test_a_file_in_the_way_is_a_409_naming_it(client, alice):
     # A dotless name on purpose: path_regex forbids "." in a path segment (that
     # is how it blocks "." and ".."), so a path through notes.txt never reaches
-    # the handler at all — it is a 422 from validation.
+    # the handler at all - it is a 422 from validation.
     upload(client, alice, "/", "Makefile")
     blocked = client.post("/folder", json={"path": "/Makefile/inside"}, headers=alice.headers)
     assert blocked.status_code == 409

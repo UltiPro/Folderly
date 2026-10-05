@@ -93,7 +93,7 @@ instance/
 .DS_Store
 Thumbs.db
 
-# Ignore the local storage directories — uploaded files and the database —
+# Ignore the local storage directories - uploaded files and the database -
 # which `COPY . .` would otherwise bake into the image.
 folderly-data/
 folderly-db/

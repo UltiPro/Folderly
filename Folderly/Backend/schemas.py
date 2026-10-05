@@ -1,6 +1,6 @@
 import re
 
-from marshmallow import Schema, ValidationError, fields, validate, post_load
+from marshmallow import Schema, ValidationError, fields, validate, post_load, pre_load
 
 from models.foldershare import ROLES
 
@@ -25,7 +25,7 @@ class UserLoginSchema(Schema):
 
 
 class UserSchema(UserLoginSchema):
-    """Registration / account update — enforces the password policy."""
+    """Registration / account update - enforces the password policy."""
 
     email = fields.Email(
         required=True,
@@ -42,7 +42,7 @@ class UserSchema(UserLoginSchema):
 
 class CurrentPasswordSchema(Schema):
     """Proof that the account holder is at the keyboard, not just someone
-    holding their token — asked before anything that could lock them out of
+    holding their token - asked before anything that could lock them out of
     their account or take it away."""
 
     current_password = fields.Str(
@@ -109,7 +109,7 @@ class OwnFolderSchema(Schema):
         validate=validate.Regexp(regex=path_regex, error=path_regex_error),
         metadata={
             "example": "/Photos",
-            "description": "Folder path, where `/` is the root of your files — "
+            "description": "Folder path, where `/` is the root of your files - "
             "or, with `share`, of the folder shared with you.",
         },
     )
@@ -121,7 +121,7 @@ class OwnFolderSchema(Schema):
 
 
 class FolderSchema(OwnFolderSchema):
-    """A folder in the caller's own files, or — with `share` — in a folder
+    """A folder in the caller's own files, or - with `share` - in a folder
     someone shared with them."""
 
     share = fields.Str(
@@ -140,7 +140,7 @@ class FileUploadSchema(FolderSchema):
 
     `file` is declared for the docs only, so Swagger renders a file picker.
     webargs' form location reads `request.form`, where the file never appears
-    (it lives in `request.files`), so marshmallow cannot require it — the
+    (it lives in `request.files`), so marshmallow cannot require it - the
     handler checks for it instead and answers 400, not 422.
     """
 
@@ -152,6 +152,32 @@ class FileUploadSchema(FolderSchema):
             "description": "The file to upload. Required.",
         },
     )
+
+    # Blank rather than null, so Swagger's pre-filled form works on your own
+    # files as sent. A form field cannot hold null at all.
+    share = fields.Str(
+        load_default=None,
+        validate=_validate_share,
+        metadata={
+            "example": "",
+            "description": "Leave empty for your own files. To upload into a "
+            "folder shared with you, its `share` from `GET /folder/shared`.",
+        },
+    )
+
+    @pre_load
+    def _blank_share_is_no_share(self, data, **kwargs):
+        """An empty `share` means "my own files" here, unlike everywhere else.
+
+        A multipart form carries only strings, so a browser sends an empty one
+        for a field left blank and there is no way to express null. Elsewhere an
+        empty `share` is rejected as an unset client variable, because leaving
+        the field out is easy; in a form it is impossible, so the same emptiness
+        means the opposite.
+        """
+        if data.get("share") == "":
+            data = {**data, "share": None}
+        return data
 
 
 class RenameFolderSchema(FolderSchema):
@@ -188,7 +214,7 @@ class FolderResponseSchema(Schema):
 
 class SharedFolderSchema(Schema):
     """A folder someone else shared with the caller. Only its own name is
-    exposed — not where it sits in the owner's files."""
+    exposed - not where it sits in the owner's files."""
 
     share = fields.Str(
         dump_only=True,
@@ -199,7 +225,7 @@ class SharedFolderSchema(Schema):
     role = fields.Str(
         dump_only=True,
         metadata={
-            "description": "What you may do in it — the best of this share and "
+            "description": "What you may do in it - the best of this share and "
             "any share above it. " + ROLE_DESCRIPTION
         },
     )

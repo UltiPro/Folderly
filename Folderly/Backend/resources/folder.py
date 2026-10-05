@@ -87,7 +87,7 @@ class Folder(MethodView):
     def put(self, data):
         """Rename a folder
 
-        `name` is the new name alone, not a path — the folder stays where it
+        `name` is the new name alone, not a path - the folder stays where it
         is. Shares inside it follow the rename, and people it is shared with
         keep their access. `/` cannot be renamed. In a shared folder, needs the
         `edit` role.

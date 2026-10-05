@@ -21,7 +21,7 @@ venv_back/
 build/
 dist/
 
-# Environment variable files — the committed template is the one exception
+# Environment variable files - the committed template is the one exception
 .env
 .env.*
 *.env

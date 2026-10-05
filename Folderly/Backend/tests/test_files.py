@@ -10,6 +10,29 @@ def upload(client, account, path, name, content=b"hello", share=None):
     return client.post("/file", data=data, content_type="multipart/form-data", headers=account.headers)
 
 
+def test_a_blank_share_on_the_upload_form_means_my_own_files(client, alice):
+    """The one place an empty `share` is not refused.
+
+    A multipart form carries only strings, so a field left blank arrives as ""
+    and there is no way to send null - which makes Swagger's own form unusable
+    on your own files. Everywhere else "" is still a 422.
+    """
+    assert upload(client, alice, "/", "notes.txt", share="").status_code == 201
+
+    landed = client.get("/folder/list", query_string={"path": "/"}, headers=alice.headers)
+    assert [entry["name"] for entry in landed.get_json()] == ["notes.txt"]
+
+    in_json = client.delete("/folder", json={"path": "/", "share": ""}, headers=alice.headers)
+    assert in_json.status_code == 422
+
+
+def test_a_share_that_is_the_word_null_is_a_missing_folder(client, alice):
+    """Typing `null` into the form sends four characters, not nothing."""
+    refused = upload(client, alice, "/", "notes.txt", share="null")
+    assert refused.status_code == 404
+    assert refused.get_json()["message"] == "Shared folder not found."
+
+
 def test_upload_then_read_it_back(client, alice):
     assert upload(client, alice, "/", "notes.txt", b"hello there").status_code == 201
 

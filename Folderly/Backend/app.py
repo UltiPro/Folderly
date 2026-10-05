@@ -32,13 +32,13 @@ MAX_UPLOAD_BYTES = 100 * 1024 * 1024
 
 API_DESCRIPTION = """\
 Self-hosted file storage: user-owned folders that can be shared with other users,
-each with their own role — read, add or edit.
+each with their own role - read, add or edit.
 
 **To try it here:** call `POST /login`, copy the `access_token` from the
 response, click **Authorize** and paste it in. It is remembered across page
 reloads until you log out of the dialog.
 
-New accounts start inactive — every Folders, Files, Access and Disk endpoint
+New accounts start inactive - every Folders, Files, Access and Disk endpoint
 answers `403` until a code is redeemed at `POST /user/activate`.
 """
 
@@ -58,7 +58,7 @@ def _required_dir(name):
     if not path.is_dir():
         raise RuntimeError(
             f"{name} is {path}, which does not exist. Outside Docker, the "
-            f"{name} in .env is the container's path — set {name} in the "
+            f"{name} in .env is the container's path - set {name} in the "
             "shell to a local directory first."
         )
     return path
@@ -156,7 +156,7 @@ def init():
 
     ### Error contract ###
 
-    # Every error answers with the same three keys — code, status, message —
+    # Every error answers with the same three keys - code, status, message -
     # plus `errors` for per-field validation detail.
     def error_response(code, message):
         return {"code": code, "status": HTTPStatus(code).phrase, "message": message}, code
@@ -171,7 +171,7 @@ def init():
     def invalid_token(reason):
         return error_response(401, SESSION_OVER)
 
-    # Sending a valid token of the wrong kind — which /refresh invites — would
+    # Sending a valid token of the wrong kind - which /refresh invites - would
     # otherwise land in invalid_token_loader and read as "session over". This
     # handler replaces the library's own, registered when JWTManager was built.
     @app.errorhandler(WrongTokenError)
@@ -194,8 +194,8 @@ def init():
     def token_user_gone(jwt_header, jwt_payload):
         return error_response(401, SESSION_OVER)
 
-    # Errors raised anywhere else — abort() in a handler, a failed validation,
-    # an unknown URL, an uncaught exception — all arrive here as HTTPExceptions.
+    # Errors raised anywhere else - abort() in a handler, a failed validation,
+    # an unknown URL, an uncaught exception - all arrive here as HTTPExceptions.
     DEFAULT_MESSAGES = {
         404: "This endpoint does not exist.",
         405: "This method is not allowed on this endpoint.",

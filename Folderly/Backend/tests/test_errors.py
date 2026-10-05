@@ -1,7 +1,7 @@
 """The error contract: one shape for every failure, whoever raises it.
 
-Three different producers used to answer three different ways — flask-smorest,
-Flask-JWT-Extended and Werkzeug's own default pages — so a client had to guess
+Three different producers used to answer three different ways - flask-smorest,
+Flask-JWT-Extended and Werkzeug's own default pages - so a client had to guess
 which it was looking at.
 """
 
@@ -60,7 +60,7 @@ def test_every_token_problem_answers_401_in_the_same_shape(client, headers, expe
 def test_an_uncaught_exception_still_keeps_the_shape(app):
     """A bare 500 used to reach the client as flask-smorest's message-less body.
 
-    The route is added before the first request on purpose — Flask refuses to
+    The route is added before the first request on purpose - Flask refuses to
     register one afterwards.
     """
 

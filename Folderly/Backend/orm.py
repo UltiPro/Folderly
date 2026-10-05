@@ -9,7 +9,7 @@ db = SQLAlchemy()
 
 @event.listens_for(Engine, "connect")
 def _enforce_sqlite_foreign_keys(dbapi_connection, connection_record):
-    """SQLite enforces foreign keys — and so every `ondelete="CASCADE"` —
+    """SQLite enforces foreign keys - and so every `ondelete="CASCADE"` -
     only on connections that switch them on. Without it, deleted folders
     leave orphaned share rows behind."""
     if isinstance(dbapi_connection, sqlite3.Connection):

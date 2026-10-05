@@ -33,7 +33,7 @@ def create_codes(count, label):
         generated.append(code)
     db.session.commit()
 
-    click.echo("Write these down now — they are not stored in readable form:")
+    click.echo("Write these down now - they are not stored in readable form:")
     for code in generated:
         click.echo(f"  {code}")
 

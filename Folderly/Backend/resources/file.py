@@ -66,7 +66,7 @@ class File(MethodView):
 
         Up to 100 MB. A file with the same name is overwritten. Refused with 507
         once the disk passes its fill limit (see `GET /disk`). In a shared
-        folder, needs the `add` role — or `edit` to overwrite an existing file.
+        folder, needs the `add` role - or `edit` to overwrite an existing file.
         """
         require_folder_access(data["full_path"], need="add")
         folder_path = resolve_disk_path(os.environ.get("DISK_PATH"), data["full_path"])
@@ -148,7 +148,7 @@ class File(MethodView):
 
 @blp.route("/file/download")
 class FileDownload(MethodView):
-    """Deliberately undecorated by `blp.response` — the body is the file itself,
+    """Deliberately undecorated by `blp.response` - the body is the file itself,
     not a serialised schema."""
 
     @jwt_required()

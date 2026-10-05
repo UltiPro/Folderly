@@ -37,7 +37,7 @@ blp = Blueprint(
 
 
 def _display_name(folder):
-    """The shared folder's own name — not where it sits in the owner's files,
+    """The shared folder's own name - not where it sits in the owner's files,
     which is none of the recipient's business. An owner who shares their whole
     root would otherwise show up as their numeric id."""
     parts = relative_parts(folder.path)
@@ -85,7 +85,7 @@ class Share(MethodView):
         """List who a folder is shared with
 
         Owner only. Lists the shares set on this exact folder, with their
-        roles — not ones inherited from a folder above it.
+        roles - not ones inherited from a folder above it.
         """
         folder = require_folder_access(data["full_path"])
         require_folder_owner(folder)
@@ -114,7 +114,7 @@ class Share(MethodView):
     def post(self, data):
         """Share a folder, or change someone's role
 
-        Owner only. Shares with the given role — `read` if none is given — or,
+        Owner only. Shares with the given role - `read` if none is given - or,
         if the folder is already shared with that user, replaces their role.
         Only the owner can share further.
         """
