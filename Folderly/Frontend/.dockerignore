@@ -1,0 +1,21 @@
+# Rebuilt in the image
+node_modules/
+dist/
+
+# Local overrides, the image bakes its own at build time.
+.env
+.env.*
+!.env.example
+
+# Caches and reports
+*.tsbuildinfo
+.eslintcache
+coverage/
+__screenshots__/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
