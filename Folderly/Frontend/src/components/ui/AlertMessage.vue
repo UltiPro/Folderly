@@ -17,7 +17,11 @@ const classes = computed(() => TONES[props.tone])
 </script>
 
 <template>
-  <p :role="tone === 'error' ? 'alert' : 'status'" class="rounded-lg border px-3 py-2 text-sm" :class="classes">
+  <p
+    :role="tone === 'error' ? 'alert' : 'status'"
+    class="rounded-lg border px-3 py-2 text-sm"
+    :class="classes"
+  >
     <slot />
   </p>
 </template>

@@ -20,13 +20,19 @@ const crumbs = computed(() => breadcrumbs(props.path, props.rootLabel))
     <template v-for="(crumb, index) in crumbs" :key="crumb.path">
       <span v-if="index > 0" class="text-border-subtle" aria-hidden="true">/</span>
 
-      <span v-if="index === crumbs.length - 1" aria-current="page"
-        class="rounded px-1.5 py-0.5 font-medium text-strong">
+      <span
+        v-if="index === crumbs.length - 1"
+        aria-current="page"
+        class="rounded px-1.5 py-0.5 font-medium text-strong"
+      >
         {{ crumb.label }}
       </span>
-      <button v-else type="button"
+      <button
+        v-else
+        type="button"
         class="rounded px-1.5 py-0.5 text-muted transition hover:bg-surface-sunken hover:text-strong"
-        @click="emit('navigate', crumb.path)">
+        @click="emit('navigate', crumb.path)"
+      >
         {{ crumb.label }}
       </button>
     </template>

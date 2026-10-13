@@ -38,18 +38,34 @@ function open(folder: SharedFolder) {
       </div>
 
       <ul v-else class="divide-y divide-border-subtle">
-        <li v-for="folder in spaces.shares" :key="folder.share"
-          class="flex items-center gap-3 px-4 py-3 transition hover:bg-surface-sunken">
-          <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand" aria-hidden="true">
-            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z" />
+        <li
+          v-for="folder in spaces.shares"
+          :key="folder.share"
+          class="flex items-center gap-3 px-4 py-3 transition hover:bg-surface-sunken"
+        >
+          <span
+            class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand/10 text-brand"
+            aria-hidden="true"
+          >
+            <svg
+              class="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M4 20a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2z"
+              />
             </svg>
           </span>
 
           <div class="min-w-0 flex-1">
-            <button type="button"
+            <button
+              type="button"
               class="block max-w-full truncate text-left text-sm font-medium text-strong hover:text-brand hover:underline"
-              @click="open(folder)">
+              @click="open(folder)"
+            >
               {{ folder.name }}
             </button>
             <span class="text-xs text-muted">Shared by {{ folder.owner_email }}</span>

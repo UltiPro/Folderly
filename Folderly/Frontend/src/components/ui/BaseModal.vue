@@ -39,13 +39,25 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 
 <template>
   <Teleport to="body">
-    <Transition enter-active-class="transition duration-150" enter-from-class="opacity-0"
-      leave-active-class="transition duration-100" leave-to-class="opacity-0">
-      <div v-if="open" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
-        @click.self="emit('close')">
-        <div ref="panel" role="dialog" aria-modal="true" :aria-label="title"
+    <Transition
+      enter-active-class="transition duration-150"
+      enter-from-class="opacity-0"
+      leave-active-class="transition duration-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="open"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
+        @click.self="emit('close')"
+      >
+        <div
+          ref="panel"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="title"
           class="flex max-h-[90vh] w-full flex-col rounded-xl border border-border-subtle bg-surface p-5 shadow-xl"
-          :class="size === 'lg' ? 'max-w-4xl' : 'max-w-md'">
+          :class="size === 'lg' ? 'max-w-4xl' : 'max-w-md'"
+        >
           <h2 class="text-base font-semibold text-strong">{{ title }}</h2>
           <p v-if="description" class="mt-1 text-sm text-muted">{{ description }}</p>
 

@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - 'Folderly/Backend/**'
+      - 'Folderly/Frontend/**'
       - '.github/workflows/ci.yml'
   pull_request:
     paths:
       - 'Folderly/Backend/**'
+      - 'Folderly/Frontend/**'
       - '.github/workflows/ci.yml'
 
 # A second push to the same branch makes the first one irrelevant.
@@ -18,11 +20,12 @@ concurrency:
 
 env:
   PYTHON_VERSION: '3.14' # The Dockerfile's python is 3.14-slim
+  NODE_VERSION: '24' # package.json's engines allow 22.18+ or 24.12+
   WORKDIR: Folderly/Backend
 
 jobs:
   test:
-    name: Lint and unit tests
+    name: Backend lint and unit tests
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -46,7 +49,7 @@ jobs:
         run: pytest
 
   smoke:
-    name: Smoke test the built image
+    name: Smoke test the backend image
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
@@ -64,6 +67,7 @@ jobs:
       - name: Start the container
         run: |
           mkdir -p /tmp/folderly/files /tmp/folderly/db
+          sudo chown -R 10001:10001 /tmp/folderly/files /tmp/folderly/db
           docker run -d --name folderly \
             -p 5000:5000 \
             -e DISK_PATH=/data \
@@ -98,23 +102,60 @@ jobs:
         if: always()
         run: docker logs folderly
 
-  # Two architectures, each built on its own native runner — no QEMU, so both
-  # take the same couple of minutes. Neither job tags the image: each pushes an
+  frontend:
+    name: Frontend type-check, tests and lint
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: Folderly/Frontend
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: Folderly/Frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run type-check
+
+      - name: Unit tests
+        run: npx vitest run
+
+      - name: Lint
+        run: |
+          npx oxlint .
+          npx eslint .
+
+  # Two images - the API and the SPA behind Caddy - each for two architectures,
+  # every one on its own native runner, so no QEMU and all four finish in about
+  # the same couple of minutes. Nothing here tags anything: each job pushes an
   # untagged build and reports its digest, and the merge job below binds the two
-  # digests under one tag. Tagging here instead would have the two jobs race,
-  # with whichever finished last leaving `latest` pointing at one architecture.
+  # digests of one image under one tag. Tagging here instead would have the two
+  # architectures race, with whichever finished last leaving `latest` pointing
+  # at one of them.
   publish:
-    name: Build ${{ matrix.platform }}
-    needs: [test, smoke]
+    name: Build ${{ matrix.component }} ${{ matrix.platform }}
+    needs: [test, smoke, frontend]
     if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:
+        component: [backend, web]
+        platform: [linux/amd64, linux/arm64]
         include:
           - platform: linux/amd64
             runner: ubuntu-24.04
           - platform: linux/arm64
             runner: ubuntu-24.04-arm
+          - component: backend
+            context: Folderly/Backend
+          - component: web
+            context: Folderly/Frontend
     runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
@@ -127,9 +168,9 @@ jobs:
         # GHCR rejects capitals, which a GitHub username may contain, and an
         # artifact name cannot hold the slash in "linux/amd64".
         run: |
-          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/folderly-backend" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/folderly-${{ matrix.component }}" >> "$GITHUB_OUTPUT"
           platform=${{ matrix.platform }}
-          echo "slug=${platform//\//-}" >> "$GITHUB_OUTPUT"
+          echo "slug=${{ matrix.component }}-${platform//\//-}" >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
 
@@ -143,7 +184,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          context: Folderly/Backend
+          context: ${{ matrix.context }}
           platforms: ${{ matrix.platform }}
           # Links the package to this repository on GitHub
           labels: |
@@ -167,16 +208,20 @@ jobs:
           retention-days: 1
 
   manifest:
-    name: Tag both architectures as one image
+    name: Tag both architectures of ${{ matrix.component }} as one image
     needs: publish
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [backend, web]
     permissions:
       packages: write
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: ${{ runner.temp }}/digests
-          pattern: digest-*
+          pattern: digest-${{ matrix.component }}-*
           merge-multiple: true
 
       - uses: docker/setup-buildx-action@v3
@@ -189,7 +234,7 @@ jobs:
 
       - name: Work out the image name
         id: image
-        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/folderly-backend" >> "$GITHUB_OUTPUT"
+        run: echo "name=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/folderly-${{ matrix.component }}" >> "$GITHUB_OUTPUT"
 
       - name: Create the manifest list
         working-directory: ${{ runner.temp }}/digests

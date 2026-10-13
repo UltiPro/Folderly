@@ -50,7 +50,9 @@ async function logout() {
 <template>
   <div class="mx-auto max-w-md py-10">
     <div class="mb-6 text-center">
-      <span class="mx-auto mb-3 grid size-11 place-items-center rounded-xl bg-brand text-lg font-semibold text-white">
+      <span
+        class="mx-auto mb-3 grid size-11 place-items-center rounded-xl bg-brand text-lg font-semibold text-white"
+      >
         F
       </span>
       <h1 class="text-xl font-semibold">One more step</h1>
@@ -59,19 +61,31 @@ async function logout() {
       </p>
     </div>
 
-    <form class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-5" novalidate
-      @submit.prevent="submit">
+    <form
+      class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-5"
+      novalidate
+      @submit.prevent="submit"
+    >
       <AlertMessage v-if="formError">{{ formError }}</AlertMessage>
 
-      <BaseInput v-model="code" label="Activation code" placeholder="K7M2-PX94-TB3H-QR8F" autocomplete="off"
-        hint="Case, dashes and spaces do not matter." :error="fieldError" :disabled="submitting" />
+      <BaseInput
+        v-model="code"
+        label="Activation code"
+        placeholder="K7M2-PX94-TB3H-QR8F"
+        autocomplete="off"
+        hint="Case, dashes and spaces do not matter."
+        :error="fieldError"
+        :disabled="submitting"
+      />
 
       <BaseButton type="submit" variant="primary" :loading="submitting" class="w-full">
         Activate
       </BaseButton>
     </form>
 
-    <div class="mt-4 rounded-xl border border-border-subtle bg-surface-sunken p-4 text-sm text-muted">
+    <div
+      class="mt-4 rounded-xl border border-border-subtle bg-surface-sunken p-4 text-sm text-muted"
+    >
       <p class="font-medium text-soft">Where does a code come from?</p>
       <p class="mt-1">
         Whoever runs this instance generates them, and each one works once. Ask them for yours -
@@ -81,8 +95,12 @@ async function logout() {
 
     <p class="mt-4 text-center text-sm text-muted">
       Signed in as {{ auth.user?.email }} ·
-      <button type="button" class="font-medium text-brand hover:underline disabled:opacity-60" :disabled="loggingOut"
-        @click="logout">
+      <button
+        type="button"
+        class="font-medium text-brand hover:underline disabled:opacity-60"
+        :disabled="loggingOut"
+        @click="logout"
+      >
         Log out
       </button>
     </p>

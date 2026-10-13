@@ -49,7 +49,9 @@ async function submit() {
 <template>
   <div class="mx-auto max-w-sm py-10">
     <div class="mb-6 text-center">
-      <span class="mx-auto mb-3 grid size-11 place-items-center rounded-xl bg-brand text-lg font-semibold text-white">
+      <span
+        class="mx-auto mb-3 grid size-11 place-items-center rounded-xl bg-brand text-lg font-semibold text-white"
+      >
         F
       </span>
       <h1 class="text-xl font-semibold">Create your account</h1>
@@ -58,16 +60,39 @@ async function submit() {
       </p>
     </div>
 
-    <form class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-5" novalidate
-      @submit.prevent="submit">
+    <form
+      class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-5"
+      novalidate
+      @submit.prevent="submit"
+    >
       <AlertMessage v-if="formError">{{ formError }}</AlertMessage>
 
-      <BaseInput v-model="email" label="Email" type="email" autocomplete="email" placeholder="you@example.com"
-        :error="emailError" :disabled="submitting" />
-      <BaseInput v-model="password" label="Password" type="password" autocomplete="new-password" :error="passwordError"
-        :hint="PASSWORD_RULE" :disabled="submitting" />
-      <BaseInput v-model="confirmation" label="Confirm password" type="password" autocomplete="new-password"
-        :error="confirmationError" :disabled="submitting" />
+      <BaseInput
+        v-model="email"
+        label="Email"
+        type="email"
+        autocomplete="email"
+        placeholder="you@example.com"
+        :error="emailError"
+        :disabled="submitting"
+      />
+      <BaseInput
+        v-model="password"
+        label="Password"
+        type="password"
+        autocomplete="new-password"
+        :error="passwordError"
+        :hint="PASSWORD_RULE"
+        :disabled="submitting"
+      />
+      <BaseInput
+        v-model="confirmation"
+        label="Confirm password"
+        type="password"
+        autocomplete="new-password"
+        :error="confirmationError"
+        :disabled="submitting"
+      />
 
       <BaseButton type="submit" variant="primary" :loading="submitting" class="w-full">
         Create account

@@ -54,11 +54,19 @@ const message = computed(() => {
       <span :class="textColor">{{ message }}</span>
     </div>
 
-    <div class="h-1.5 w-full overflow-hidden rounded-full bg-surface-sunken" role="progressbar"
-      :aria-valuenow="Math.round(usage.percent_used)" aria-valuemin="0" aria-valuemax="100"
-      :aria-label="`Storage used: ${Math.round(usage.percent_used)}%`">
-      <div class="h-full rounded-full transition-[width] duration-300" :class="barColor"
-        :style="{ width: `${width}%` }" />
+    <div
+      class="h-1.5 w-full overflow-hidden rounded-full bg-surface-sunken"
+      role="progressbar"
+      :aria-valuenow="Math.round(usage.percent_used)"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      :aria-label="`Storage used: ${Math.round(usage.percent_used)}%`"
+    >
+      <div
+        class="h-full rounded-full transition-[width] duration-300"
+        :class="barColor"
+        :style="{ width: `${width}%` }"
+      />
     </div>
   </div>
 </template>

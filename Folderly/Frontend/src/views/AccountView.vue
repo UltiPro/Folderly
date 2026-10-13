@@ -91,19 +91,42 @@ async function deleteAccount(confirmPassword: string) {
       </p>
     </div>
 
-    <form class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-5" novalidate
-      @submit.prevent="save">
+    <form
+      class="flex flex-col gap-4 rounded-xl border border-border-subtle bg-surface p-5"
+      novalidate
+      @submit.prevent="save"
+    >
       <AlertMessage v-if="formError">{{ formError }}</AlertMessage>
       <AlertMessage v-else-if="saved" tone="success">
         Account updated. Any other device signed in to this account has been logged out.
       </AlertMessage>
 
-      <BaseInput v-model="email" label="Email" type="email" autocomplete="email" :error="emailError"
-        :disabled="saving" />
-      <BaseInput v-model="password" label="New password" type="password" autocomplete="new-password"
-        :hint="`Required to save any change. ${PASSWORD_RULE}`" :error="passwordError" :disabled="saving" />
-      <BaseInput v-model="currentPassword" label="Current password" type="password" autocomplete="current-password"
-        hint="Confirms it is really you." :error="currentError" :disabled="saving" />
+      <BaseInput
+        v-model="email"
+        label="Email"
+        type="email"
+        autocomplete="email"
+        :error="emailError"
+        :disabled="saving"
+      />
+      <BaseInput
+        v-model="password"
+        label="New password"
+        type="password"
+        autocomplete="new-password"
+        :hint="`Required to save any change. ${PASSWORD_RULE}`"
+        :error="passwordError"
+        :disabled="saving"
+      />
+      <BaseInput
+        v-model="currentPassword"
+        label="Current password"
+        type="password"
+        autocomplete="current-password"
+        hint="Confirms it is really you."
+        :error="currentError"
+        :disabled="saving"
+      />
 
       <div class="flex justify-end">
         <BaseButton type="submit" variant="primary" :loading="saving">Save changes</BaseButton>
@@ -121,9 +144,18 @@ async function deleteAccount(confirmPassword: string) {
       </div>
     </section>
 
-    <PromptDialog :open="deleteOpen" title="Delete your account?"
+    <PromptDialog
+      :open="deleteOpen"
+      title="Delete your account?"
       description="Your files are deleted from disk and cannot be recovered. Enter your password to confirm."
-      label="Current password" type="password" confirm-label="Delete everything" danger :submitting="deleting"
-      :error="deleteError" @submit="deleteAccount" @close="deleteOpen = false" />
+      label="Current password"
+      type="password"
+      confirm-label="Delete everything"
+      danger
+      :submitting="deleting"
+      :error="deleteError"
+      @submit="deleteAccount"
+      @close="deleteOpen = false"
+    />
   </div>
 </template>
