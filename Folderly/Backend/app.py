@@ -65,7 +65,10 @@ def _required_dir(name):
 
 
 def init():
-    app = Flask(__name__)
+    # Flask's constructor mounts an unauthenticated /static/<path:filename>
+    # route even when no such directory exists, and would serve whatever a
+    # later commit put there.
+    app = Flask(__name__, static_folder=None)
 
     ### Configuration ###
 

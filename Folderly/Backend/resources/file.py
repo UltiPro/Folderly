@@ -27,6 +27,12 @@ blp = Blueprint(
 )
 
 
+def _is_a_path_not_a_name(filename):
+    """True when an upload asked for something other than a plain file name."""
+    separators = ("/", "\\", "\x00")
+    return any(sep in filename for sep in separators) or set(filename.strip()) <= {"."}
+
+
 def _safe_file_path(folder_path, filename):
     safe_name = secure_filename(filename)
     if not safe_name or safe_name != filename:
@@ -73,6 +79,8 @@ class File(MethodView):
         upload = request.files.get("file")
         if upload is None or not upload.filename:
             abort(400, message="No file provided.")
+        if _is_a_path_not_a_name(upload.filename):
+            abort(400, message="Invalid file name.")
         safe_name = secure_filename(upload.filename)
         if not safe_name:
             abort(400, message="Invalid file name.")
@@ -169,4 +177,8 @@ class FileDownload(MethodView):
         # reusing it, since files here get overwritten and unshared. Werkzeug's
         # ETag is mtime and size, so an overwrite is missed only on a filesystem
         # whose timestamps are coarser than the gap between the two writes.
-        return send_file(file_path, as_attachment=True, download_name=file_path.name, max_age=0)
+        response = send_file(file_path, as_attachment=True, download_name=file_path.name, max_age=0)
+        # Caddy puts the SPA and this API on one origin, so a file the browser
+        # decided to render itself would be XSS on the application's own origin.
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        return response

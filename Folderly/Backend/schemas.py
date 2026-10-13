@@ -101,12 +101,32 @@ def _validate_share(value):
         raise ValidationError("Invalid share.")
 
 
+# 255 bytes is the per-name limit on ext4, NTFS and APFS alike, and 4096 is
+# comfortably inside every PATH_MAX. Counted in bytes rather than characters
+# because bytes are what the filesystem counts.
+MAX_SEGMENT_BYTES = 255
+MAX_PATH_BYTES = 4096
+
+
+def _validate_path_length(value):
+    """Refuse a path the filesystem could not hold, so it is a 422 here
+    rather than the 500 a failing os.makedirs answers with."""
+    if len(value.encode()) > MAX_PATH_BYTES:
+        raise ValidationError("This path is too long.")
+    for segment in value.split("/"):
+        if len(segment.encode()) > MAX_SEGMENT_BYTES:
+            raise ValidationError(f"Folder name is too long - {MAX_SEGMENT_BYTES} bytes at most.")
+
+
 class OwnFolderSchema(Schema):
     """A folder in the caller's own files, where `/` is their root."""
 
     path = fields.Str(
         required=True,
-        validate=validate.Regexp(regex=path_regex, error=path_regex_error),
+        validate=[
+            validate.Regexp(regex=path_regex, error=path_regex_error),
+            _validate_path_length,
+        ],
         metadata={
             "example": "/Photos",
             "description": "Folder path, where `/` is the root of your files - "
@@ -183,7 +203,10 @@ class FileUploadSchema(FolderSchema):
 class RenameFolderSchema(FolderSchema):
     name = fields.Str(
         required=True,
-        validate=validate.Regexp(regex=folder_regex, error=folder_regex_error),
+        validate=[
+            validate.Regexp(regex=folder_regex, error=folder_regex_error),
+            validate.Length(max=MAX_SEGMENT_BYTES),
+        ],
         metadata={"example": "Vacation", "description": "The new name, not a path."},
     )
 
@@ -257,7 +280,10 @@ class FileSchema(FolderSchema):
 class RenameFileSchema(FileSchema):
     name = fields.Str(
         required=True,
-        validate=validate.Regexp(regex=file_regex, error=file_regex_error),
+        validate=[
+            validate.Regexp(regex=file_regex, error=file_regex_error),
+            validate.Length(max=MAX_SEGMENT_BYTES),
+        ],
         metadata={"example": "notes-final.txt", "description": "The new file name."},
     )
 
