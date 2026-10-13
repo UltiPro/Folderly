@@ -1,0 +1,59 @@
+# Lives at /srv/folderly next to its .env, see the README.
+
+services:
+  app:
+    image: ${FOLDERLY_IMAGE}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    # No `ports:` on purpose, only Caddy reaches the API, never the network.
+    expose:
+      - "5000"
+    environment:
+      - DISK_PATH=/data
+      - DB_DIR=/db
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - DISK_USAGE_LIMIT_PERCENT=${DISK_USAGE_LIMIT_PERCENT:-85}
+      # Gunicorn sizing. Defaults suit a small machine; raise on a bigger host.
+      - WEB_CONCURRENCY=${WEB_CONCURRENCY:-2}
+      - GUNICORN_THREADS=${GUNICORN_THREADS:-4}
+      - GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}
+    volumes:
+      # Host paths, not named volumes, one directory to back up.
+      - /srv/folderly/files:/data
+      - /srv/folderly/db:/db
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/hello')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging: &logging
+      driver: json-file
+      # The default is unlimited, and these logs share the disk with uploads.
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Caddy with the built SPA inside: HTTPS, the static files, and /api to the
+  # backend. A separate static server would only add a hop.
+  web:
+    image: ${FOLDERLY_WEB_IMAGE}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - FOLDERLY_DOMAIN=${FOLDERLY_DOMAIN}
+    volumes:
+      - /srv/folderly/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Dropping caddy_data re-issues the certificate per restart. Let's Encrypt allows five a week.
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    logging: *logging
+
+volumes:
+  caddy_data:
+  caddy_config:

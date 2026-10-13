@@ -1,0 +1,22 @@
+# Reverse proxy and HTTPS. Copied to /srv/folderly/Caddyfile on the host.
+
+# The domain from the environment, or plain HTTP on :80 when it is unset.
+{$FOLDERLY_DOMAIN::80} {
+	handle_path /api/* {
+		# `app` is the service beside this one, an API elsewhere goes here as host:port.
+		reverse_proxy app:5000
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	encode gzip
+
+	log {
+		output stdout
+		format console
+	}
+}

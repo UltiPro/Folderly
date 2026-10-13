@@ -1,0 +1,13 @@
+# How often the host checks for a new image. Per host, systemctl edit folderly-update.timer.
+
+[Unit]
+Description=Check for a new Folderly image
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+# Keeps every host from asking at the same second, and off the backup's slot.
+RandomizedDelaySec=30s
+
+[Install]
+WantedBy=timers.target

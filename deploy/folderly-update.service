@@ -1,0 +1,14 @@
+# Pulls what CI last published and restarts if it changed. Driven by the timer.
+
+[Unit]
+Description=Update Folderly to the latest published image
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/folderly
+ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml pull --quiet
+ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml up -d
+# Prunes every dangling image on the host, not only this project's.
+ExecStart=/usr/bin/docker image prune -f
