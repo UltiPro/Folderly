@@ -13,7 +13,7 @@
     "lint": "run-s \"lint:*\"",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/ index.html"
+    "format": "prettier --write --experimental-cli ."
   },
   "dependencies": {
     "axios": "^1.20.0",

@@ -1,15 +1,12 @@
 // Mirrors of `Folderly/Backend/utils/regexes.py`
 
-// At least one lower, upper, digit and special character; 8-40 characters.
-export const PASSWORD_PATTERN =
-  /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[.~!@#$%^&*()+=[\]\\;:'"/,|{}<>?])[a-zA-Z0-9.~!@#$%^&*()+=[\]\\;:'"/,|{}<>?]{8,40}$/
+export const PASSWORD_PATTERN = /^[^\x00-\x1f\x7f]{8,40}$/
 
-export const PASSWORD_RULE =
-  'Use 8-40 characters with a lowercase letter, an uppercase letter, a digit and a special character.'
+export const PASSWORD_RULE = 'Use between 8 and 40 characters.'
 
-export const FOLDER_NAME_PATTERN = /^[a-zA-Z0-9_-]+$/
+export const FOLDER_NAME_PATTERN = /^[^/\\<>:"|?*\x00-\x1f.]+$/
 
-export const FOLDER_NAME_RULE = 'Use letters, digits, dashes and underscores only.'
+export const FOLDER_NAME_RULE = 'No dots, slashes, or any of < > : " | ? *'
 
 // Like a folder name, plus dots, but never dots alone.
 export const FILE_NAME_PATTERN = /^(?!\.+$)[a-zA-Z0-9_.-]+$/

@@ -29,6 +29,25 @@ def test_password_policy_is_enforced_on_registration(client):
     assert "password" in weak.get_json()["errors"]["json"]
 
 
+def test_the_password_rule_is_length_only(client):
+    """A browser password generator cannot read our rule, so the rule must not
+    refuse what it produces: letters and digits, or words joined by hyphens."""
+    for index, password in enumerate(
+        ("Kf8wQ2zPmR4tLv9", "long-and-easy-to-remember", "has\u0142o z polskimi znakami")
+    ):
+        email = f"generated{index}@example.com"
+        created = client.post("/register", json={"email": email, "password": password})
+        assert created.status_code == 201, password
+        logged_in = client.post("/login", json={"email": email, "password": password})
+        assert logged_in.status_code == 200, password
+
+
+def test_a_password_of_the_wrong_length_or_with_a_control_character_is_refused(client):
+    for password in ("short", "a" * 41, "abcdefg\th"):
+        refused = client.post("/register", json={"email": "nope@example.com", "password": password})
+        assert refused.status_code == 422, repr(password)
+
+
 def test_wrong_password_and_unknown_email_are_the_same_401(client, alice):
     wrong = client.post("/login", json={"email": alice.email, "password": "Wrong123!"})
     unknown = client.post("/login", json={"email": "nobody@example.com", "password": PASSWORD})

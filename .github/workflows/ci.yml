@@ -131,6 +131,10 @@ jobs:
           npx oxlint .
           npx eslint .
 
+      # Prettier honours .gitignore, so `.` skips dist/ and coverage/.
+      - name: Formatting
+        run: npx prettier --check .
+
   # Two images - the API and the SPA behind Caddy - each for two architectures,
   # every one on its own native runner, so no QEMU and all four finish in about
   # the same couple of minutes. Nothing here tags anything: each job pushes an

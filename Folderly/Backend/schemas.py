@@ -36,7 +36,7 @@ class UserSchema(UserLoginSchema):
         required=True,
         load_only=True,
         validate=validate.Regexp(regex=password_regex, error=password_regex_desc),
-        metadata={"example": "Secret123!", "description": password_regex_desc},
+        metadata={"example": "long-and-easy-to-remember", "description": password_regex_desc},
     )
 
 
@@ -49,7 +49,7 @@ class CurrentPasswordSchema(Schema):
         required=True,
         load_only=True,
         metadata={
-            "example": "Secret123!",
+            "example": "long-and-easy-to-remember",
             "description": "Your password.",
         },
     )

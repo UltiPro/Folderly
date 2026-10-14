@@ -8,17 +8,17 @@ import {
 } from '../validation'
 
 describe('validatePassword', () => {
-  it('accepts a password meeting every rule', () => {
-    expect(validatePassword('Str0ng!Pass')).toBeNull()
+  it('accepts what a password generator produces', () => {
+    expect(validatePassword('Kf8wQ2zPmR4tLv9')).toBeNull()
+    expect(validatePassword('long-and-easy-to-remember')).toBeNull()
+    expect(validatePassword('has\u0142o z polskimi znakami')).toBeNull()
   })
 
   it.each([
     ['too short', 'Ab1!'],
-    ['no uppercase', 'str0ng!pass'],
-    ['no lowercase', 'STR0NG!PASS'],
-    ['no digit', 'Strong!Pass'],
-    ['no special character', 'Str0ngPass'],
-  ])('rejects one that is %s', (_reason, password) => {
+    ['too long', 'a'.repeat(41)],
+    ['a control character', 'abcdefg\th'],
+  ])('rejects one with %s', (_reason, password) => {
     expect(validatePassword(password)).not.toBeNull()
   })
 
@@ -40,6 +40,8 @@ describe('validateEmail', () => {
 describe('validateFolderName', () => {
   it('accepts letters, digits, dashes and underscores', () => {
     expect(validateFolderName('Holiday_photos-2026')).toBeNull()
+    expect(validateFolderName('Wakacje 2024')).toBeNull()
+    expect(validateFolderName('Zdjęcia (kopia)')).toBeNull()
   })
 
   it('rejects a dot, which the backend uses to block traversal', () => {

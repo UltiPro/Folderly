@@ -112,5 +112,22 @@ def test_paths_that_could_climb_out_are_rejected_by_validation(client, alice):
 
 def test_folder_names_are_restricted(client, alice):
     client.post("/folder", json={"path": "/Photos"}, headers=alice.headers)
-    refused = client.put("/folder", json={"path": "/Photos", "name": "a/b"}, headers=alice.headers)
-    assert refused.status_code == 422
+    for name in ("a/b", "a\\b", "my.folder", "..", "a*b"):
+        refused = client.put("/folder", json={"path": "/Photos", "name": name}, headers=alice.headers)
+        assert refused.status_code == 422, name
+
+
+def test_a_name_that_can_be_created_can_also_be_renamed_to(client, alice):
+    for name in ("Wakacje 2024", "Zdj\u0119cia", "faktura (kopia)", "raport, v2", "100%"):
+        created = client.post("/folder", json={"path": f"/{name}"}, headers=alice.headers)
+        assert created.status_code == 201, name
+        renamed = client.put(
+            "/folder", json={"path": f"/{name}", "name": f"{name} b"}, headers=alice.headers
+        )
+        assert renamed.status_code == 204, name
+
+
+def test_a_path_with_an_empty_segment_is_refused(client, alice):
+    for path in ("//a", "//", "/a//b"):
+        refused = client.get("/folder/list", query_string={"path": path}, headers=alice.headers)
+        assert refused.status_code == 422, path
