@@ -6,5 +6,13 @@
   },
   "categories": {
     "correctness": "error"
-  }
+  },
+  "overrides": [
+    // validation.ts mirrors the backend, which forbids control characters in a
+    // path and in a password, so its patterns have to name them.
+    {
+      "files": ["src/utils/validation.ts"],
+      "rules": { "no-control-regex": "off" }
+    }
+  ]
 }
