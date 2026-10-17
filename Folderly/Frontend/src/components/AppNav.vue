@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { computed, ref } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 
 import BaseButton from '@/components/ui/BaseButton.vue'
 import ThemeToggle from '@/components/ThemeToggle.vue'
@@ -13,9 +13,15 @@ const auth = useAuthStore()
 const browser = useBrowserStore()
 const disk = useDiskStore()
 const spaces = useSpacesStore()
+const route = useRoute()
 const router = useRouter()
 
 const loggingOut = ref(false)
+
+const inOwnFiles = computed(() => route.name === 'files' && !route.query.share)
+const inSharedSpace = computed(
+  () => route.name === 'shared' || (route.name === 'files' && Boolean(route.query.share)),
+)
 
 async function logout() {
   loggingOut.value = true
@@ -53,15 +59,12 @@ const linkIdle = 'text-muted'
 
       <!-- Hidden until activation: the router would bounce the user back. -->
       <nav v-if="auth.isActive" class="flex items-center gap-1">
-        <RouterLink
-          :to="{ name: 'files' }"
-          :class="[linkBase, $route.name === 'files' ? linkActive : linkIdle]"
-        >
+        <RouterLink :to="{ name: 'files' }" :class="[linkBase, inOwnFiles ? linkActive : linkIdle]">
           My files
         </RouterLink>
         <RouterLink
           :to="{ name: 'shared' }"
-          :class="[linkBase, $route.name === 'shared' ? linkActive : linkIdle]"
+          :class="[linkBase, inSharedSpace ? linkActive : linkIdle]"
         >
           <span class="sm:hidden">Shared</span>
           <span class="hidden sm:inline">Shared with me</span>

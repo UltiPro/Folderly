@@ -1,0 +1,36 @@
+aversion: 2
+updates:
+  - package-ecosystem: pip
+    directory: /Folderly/Backend
+    schedule:
+      interval: weekly
+    groups:
+      backend:
+        patterns:
+          - "*"
+
+  - package-ecosystem: npm
+    directory: /Folderly/Frontend
+    schedule:
+      interval: weekly
+    groups:
+      frontend:
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # Both images: python:3.14-slim, node:24-alpine and caddy:2-alpine.
+  - package-ecosystem: docker
+    directories:
+      - /Folderly/Backend
+      - /Folderly/Frontend
+    schedule:
+      interval: weekly

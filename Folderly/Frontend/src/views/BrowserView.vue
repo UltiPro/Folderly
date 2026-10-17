@@ -276,7 +276,13 @@ const sharePath = ref<SpacePath | null>(null)
         Up
       </button>
 
-      <BreadcrumbBar :path="currentPath" :root-label="spaceLabel" @navigate="navigate" />
+      <BreadcrumbBar
+        :path="currentPath"
+        :root-label="spaceLabel"
+        :origin="shareToken ? 'Shared with me' : undefined"
+        @navigate="navigate"
+        @leave="router.push({ name: 'shared' })"
+      />
 
       <RoleBadge v-if="shareToken" :role="role" />
 

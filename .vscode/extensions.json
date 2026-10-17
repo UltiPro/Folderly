@@ -1,0 +1,12 @@
+{
+	"recommendations": [
+		"Vue.volar",
+		"vitest.explorer",
+		"dbaeumer.vscode-eslint",
+		"oxc.oxc-vscode",
+		"esbenp.prettier-vscode",
+		"EditorConfig.EditorConfig",
+		"ms-python.python",
+		"charliermarsh.ruff"
+	]
+}
