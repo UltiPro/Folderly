@@ -8,6 +8,9 @@ updates:
       backend:
         patterns:
           - "*"
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: npm
     directory: /Folderly/Frontend
@@ -17,6 +20,9 @@ updates:
       frontend:
         patterns:
           - "*"
+        update-types:
+          - minor
+          - patch
 
   - package-ecosystem: github-actions
     directory: /
@@ -26,8 +32,11 @@ updates:
       actions:
         patterns:
           - "*"
+        update-types:
+          - minor
+          - patch
 
-  # Both images: python:3.14-slim, node:24-alpine and caddy:2-alpine.
+  # The base images of both Dockerfiles: python, node and caddy.
   - package-ecosystem: docker
     directories:
       - /Folderly/Backend
