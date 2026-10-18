@@ -1,0 +1,11 @@
+[Unit]
+Description=Back up Folderly's files and database off the machine
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/srv/folderly
+# The mounted drive or share, never a directory on this machine's own disk.
+Environment=BACKUP_TARGET=/mnt/backup/folderly
+ExecStart=/srv/folderly/folderly-backup.sh

@@ -20,7 +20,7 @@ concurrency:
 
 env:
   PYTHON_VERSION: '3.14' # The Dockerfile's python is 3.14-slim
-  NODE_VERSION: '26' # Keep in step with the Dockerfile's node
+  NODE_VERSION: '24' # 26 leaves jsdom without localStorage and Vitest cannot run
   WORKDIR: Folderly/Backend
 
 jobs:

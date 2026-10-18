@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Folderly backup
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+# Catches up after the machine was switched off at the scheduled time.
+Persistent=true
+
+[Install]
+WantedBy=timers.target
