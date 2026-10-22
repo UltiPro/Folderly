@@ -16,6 +16,31 @@ def upload(client, account, path, name, content=b"hello"):
     )
 
 
+def upload_verbatim(client, account, path, name, content=b"hello"):
+    """Upload a file whose name reaches the server exactly as written here."""
+    boundary = "----folderly-hardening"
+    quoted = name.replace("\\", r"\\").replace('"', r"\"")
+    head = "\r\n".join(
+        [
+            f"--{boundary}",
+            'Content-Disposition: form-data; name="path"',
+            "",
+            path,
+            f"--{boundary}",
+            f'Content-Disposition: form-data; name="file"; filename="{quoted}"',
+            "Content-Type: application/octet-stream",
+            "",
+            "",
+        ]
+    ).encode()
+    return client.post(
+        "/file",
+        data=head + content + f"\r\n--{boundary}--\r\n".encode(),
+        content_type=f"multipart/form-data; boundary={boundary}",
+        headers=account.headers,
+    )
+
+
 ### No static route ###
 
 
@@ -85,7 +110,7 @@ def test_a_long_but_legal_segment_still_works(client, alice):
 
 def test_an_upload_named_like_a_traversal_is_refused(client, alice, disk_path):
     for bad in ("../../etc/passwd", r"..\..\windows\evil.py", "/etc/passwd", "a/b.txt"):
-        refused = upload(client, alice, "/", bad)
+        refused = upload_verbatim(client, alice, "/", bad)
         assert refused.status_code == 400, (bad, refused.get_json())
         assert refused.get_json()["message"] == "Invalid file name."
 

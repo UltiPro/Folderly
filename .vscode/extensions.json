@@ -5,6 +5,7 @@
 		"dbaeumer.vscode-eslint",
 		"oxc.oxc-vscode",
 		"esbenp.prettier-vscode",
+		"GitHub.vscode-pull-request-github",
 		"EditorConfig.EditorConfig",
 		"ms-python.python",
 		"charliermarsh.ruff"
