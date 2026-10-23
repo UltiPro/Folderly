@@ -24,7 +24,7 @@ files, and a way to hand a folder to someone else without handing over the accou
 with a Vue single-page frontend, packaged as two Docker images small enough for a Raspberry Pi
 and portable enough for anything else.
 
-Three decisions shape the whole project:
+Four decisions shape the whole project:
 
 - **Clients never see the storage layout.** Every path a client sends is relative to a _space_ - your
   own files, where `/` is your root, or a folder someone shared with you, where `/` is that folder.
@@ -33,6 +33,9 @@ Three decisions shape the whole project:
   inherited downwards, and cumulative: a share further down a path can widen access, never narrow it.
 - **Registration is open, access is not.** A new account can log in and manage itself but cannot
   touch a single file until it redeems an activation code that the instance owner generates by hand.
+- **A stolen token is not enough.** Every token is bound to the account it was issued for and stops
+  working the moment that account changes its password, and changing a password or deleting an
+  account takes the current password, not merely a valid session.
 
 > [!NOTE]
 > **Project status.** Complete and running. 124 backend tests and 89 frontend tests run in CI,
@@ -41,30 +44,25 @@ Three decisions shape the whole project:
 
 ## Features
 
-**Files and folders**
+**Your files**
 
-- Create, rename, delete and browse folders, a listing carries per-entry sizes, extensions and
-  recursive counts, and a whole subtree can be summed at once.
-- Upload, download, rename and delete files, up to 100 MB each.
+- Browse, create, rename and delete folders, with sizes, file types and item counts in the listing.
+- Upload files or whole folders by drag and drop, three at a time, each with its own progress.
+- Download, rename and delete files up to 100 MB.
+- Preview images, PDFs and text in the browser without downloading them.
+- Watch how much of the disk is left on the storage bar.
 
 **Sharing**
 
-- Recipients reach a shared folder through an unguessable token, so their access survives the owner
-  renaming or moving it.
-- `add` deliberately cannot overwrite: replacing a file destroys the old one as surely as deleting it.
+- Share any folder by email as `read`, `add` or `edit`, change that role later, or revoke it.
+- See who has access to a folder of yours, and with which role.
+- Open a folder shared with you as its own space, with only the actions your role allows.
 
-**Accounts and security**
+**Your account**
 
-- JWT access and refresh tokens with a self-pruning revocation list, each bound to its account, so no
-  token survives a password change or outlives the account itself.
-- Changing a password or deleting an account requires the current password, not just a valid token.
-- Activation codes generated from the CLI, stored only as hashes and spendable once.
-
-**Operations**
-
-- Uploads refused with `507` once the disk passes a configurable fill level, with the incoming file
-  counted as already written.
-- One error shape - `{code, status, message}` - for every failure in the API.
+- Register, activate with a code, change your email or password, delete the account and its files.
+- Hand out activation codes to decide who may use your instance.
+- Switch between the light and the dark theme.
 
 ## Tech stack
 
@@ -199,7 +197,9 @@ without them rather than failing later on someone's first upload.
 ## API
 
 Swagger UI at `/swagger-ui`, the raw specification at `/openapi.json`. Reads take their arguments
-from the query string, writes take a JSON body, uploads are `multipart/form-data`.
+from the query string, writes take a JSON body, uploads are `multipart/form-data`. Every failure
+answers the same shape - `{code, status, message}`, with per-field detail added on a validation
+error - so a client reads `message` and never has to guess.
 
 | Group   | Endpoints                                                        |
 | ------- | ---------------------------------------------------------------- |
