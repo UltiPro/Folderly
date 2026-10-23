@@ -1,0 +1,15 @@
+# The whole application locally, the way the host runs it. `include` resolves
+# the API's paths and .env against Backend/, so nothing is repeated here.
+include:
+  - Backend/docker-compose.yml
+
+services:
+  # No FOLDERLY_DOMAIN, so Caddy stays on plain HTTP.
+  web:
+    build: Frontend
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ../deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - app
