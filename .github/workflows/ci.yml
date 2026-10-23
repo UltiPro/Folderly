@@ -8,10 +8,6 @@ on:
       - 'Folderly/Frontend/**'
       - '.github/workflows/ci.yml'
   pull_request:
-    paths:
-      - 'Folderly/Backend/**'
-      - 'Folderly/Frontend/**'
-      - '.github/workflows/ci.yml'
 
 # A second push to the same branch makes the first one irrelevant.
 concurrency:
