@@ -1,4 +1,4 @@
-# Lives at /srv/folderly next to its .env, see the README.
+# Lives at /srv/folderly next to its .env, see docs/deployment.md.
 
 services:
   app:
