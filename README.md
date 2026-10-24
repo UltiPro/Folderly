@@ -253,7 +253,8 @@ A push to `main` runs three gates in parallel - ruff and pytest, the frontend's 
 tests and linters, and a smoke test over HTTP against the freshly built image - and only then builds
 for real: two images, `folderly-backend` and `folderly-web` (Caddy with the built SPA inside), each
 on native `amd64` and `arm64` runners, published to GHCR as one manifest per image under `latest`
-and `sha-<commit>`. Hosts follow `latest`, pinning a `sha-` tag is the rollback.
+and `sha-<commit>`, the full forty characters. Hosts follow `latest`, pinning a `sha-` tag is
+the rollback.
 
 **Nothing in the workflow names this account.** It publishes to
 `ghcr.io/<repository owner>/folderly-backend` and `-web`, so a fork builds its own pair under its
