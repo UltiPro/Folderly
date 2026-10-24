@@ -172,9 +172,10 @@ journalctl -u folderly-update.service -f                   # what the timer did
 sudo systemctl start folderly-update.service               # update now, without waiting
 ```
 
-**Rolling back** is one line in `.env`: `IMAGE_TAG=sha-<commit>` from a build that worked, then
-`up -d` again. One tag covers both images, so a tested pair stays together. Go back to `latest`
-afterwards, or the timer holds the old version forever.
+**Rolling back** is one line in `.env`: `IMAGE_TAG=sha-<commit>` from a build that worked - the
+full forty characters, not the short form - then `up -d` again. One tag covers both images, so a
+tested pair stays together. Go back to `latest` afterwards, or the timer holds the old version
+forever.
 
 **When it does not come up**, in order of likelihood: the `chown` in step 2 was skipped (the
 container restart-loops on "unable to open database file"), port 80 does not reach the host from
